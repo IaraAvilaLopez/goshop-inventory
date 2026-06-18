@@ -289,7 +289,8 @@ export default function Inventario() {
                           alert('Producto eliminado correctamente')
                         } catch (error: any) {
                           console.error('Error eliminando producto:', error)
-                          alert(`Error al eliminar producto: ${error.message}`)
+                          const errorMsg = error.message || error.error_description || JSON.stringify(error)
+                          alert(`Error al eliminar producto:\n\n${errorMsg}\n\nRevisa la consola para más detalles.`)
                         }
                       }
                     }}
