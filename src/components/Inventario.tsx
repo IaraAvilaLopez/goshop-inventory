@@ -258,19 +258,38 @@ export default function Inventario() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <button
                     onClick={async () => {
-                      if (confirm(`¿Eliminar ${item.marca} ${item.modelo}?`)) {
+                      if (confirm(`¿Eliminar ${item.marca} ${item.modelo} de ${sucursal}?\n\nEsto solo eliminará el producto de esta sucursal.`)) {
                         try {
-                          // Eliminar el producto (el inventario se elimina en cascada)
-                          const { error } = await supabase
-                            .from('productos')
+                          // Primero eliminar el inventario de esta sucursal
+                          const { error: errorInv } = await supabase
+                            .from('inventario')
                             .delete()
-                            .eq('id', item.producto_id)
+                            .eq('producto_id', item.producto_id)
+                            .eq('ubicacion', sucursal)
                           
-                          if (error) throw error
+                          if (errorInv) throw errorInv
+                          
+                          // Verificar si el producto existe en otras sucursales
+                          const { data: otrosInv } = await supabase
+                            .from('inventario')
+                            .select('id')
+                            .eq('producto_id', item.producto_id)
+                          
+                          // Si no existe en otras sucursales, eliminar el producto
+                          if (!otrosInv || otrosInv.length === 0) {
+                            const { error: errorProd } = await supabase
+                              .from('productos')
+                              .delete()
+                              .eq('id', item.producto_id)
+                            
+                            if (errorProd) throw errorProd
+                          }
+                          
                           fetchStock()
-                        } catch (error) {
+                          alert('Producto eliminado correctamente')
+                        } catch (error: any) {
                           console.error('Error eliminando producto:', error)
-                          alert('Error al eliminar producto')
+                          alert(`Error al eliminar producto: ${error.message}`)
                         }
                       }
                     }}
