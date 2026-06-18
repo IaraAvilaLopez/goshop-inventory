@@ -11,7 +11,6 @@ export default function Transacciones() {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [filterTipo, setFilterTipo] = useState('')
-  const hoy = new Date().toISOString().split('T')[0]
   const [filterFechaDesde, setFilterFechaDesde] = useState('')
   const [filterFechaHasta, setFilterFechaHasta] = useState('')
   const [filterPeriodo, setFilterPeriodo] = useState<'dia' | 'semana' | 'mes' | 'personalizado' | 'todas'>('todas')
