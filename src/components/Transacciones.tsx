@@ -577,7 +577,17 @@ export default function Transacciones() {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <button
                     onClick={async () => {
-                      if (!confirm(`¿Eliminar esta transacción?\n\nEl stock se restaurará automáticamente mediante el trigger de la base de datos.`)) return
+                      // Mensaje especial para CIERRE_DIA
+                      const mensaje = esCierreDia 
+                        ? `⚠️ ADVERTENCIA: Eliminar cierre de día desde historial\n\n` +
+                          `• NO se recomienda eliminar cierres procesados\n` +
+                          `• Use el botón "Reiniciar Cierre" en la sección Cierre\n` +
+                          `• El stock NO se restaurará automáticamente\n` +
+                          `• Deberá ajustar el stock manualmente si es necesario\n\n` +
+                          `¿Está seguro de eliminar este cierre?`
+                        : `¿Eliminar esta transacción?\n\nEl stock se restaurará automáticamente mediante el trigger de la base de datos.`
+                      
+                      if (!confirm(mensaje)) return
                       
                       try {
                         // Eliminar la transacción (el trigger se encarga del stock)
@@ -588,7 +598,11 @@ export default function Transacciones() {
                         
                         if (error) throw error
                         
-                        alert('✅ Transacción eliminada correctamente. El stock fue restaurado automáticamente.')
+                        const mensajeExito = esCierreDia
+                          ? '✅ Cierre eliminado. IMPORTANTE: El stock NO fue restaurado. Ajuste manualmente si es necesario.'
+                          : '✅ Transacción eliminada correctamente. El stock fue restaurado automáticamente.'
+                        
+                        alert(mensajeExito)
                         fetchData()
                       } catch (error: any) {
                         console.error('Error eliminando transacción:', error)
@@ -598,7 +612,7 @@ export default function Transacciones() {
                     className="inline-flex items-center text-red-600 hover:text-red-900 font-medium"
                   >
                     <Trash2 className="w-4 h-4 mr-1" />
-                    Eliminar
+                    {esCierreDia ? 'Eliminar (No recomendado)' : 'Eliminar'}
                   </button>
                 </td>
               </tr>
