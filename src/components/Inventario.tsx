@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { supabase, type StockActual, type Producto } from '../lib/supabase'
+import { supabase, type StockActual } from '../lib/supabase'
 import { useSucursal } from '../context/SucursalContext'
-import { Plus, Search, Filter } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 
 export default function Inventario() {
   const { sucursal } = useSucursal()
