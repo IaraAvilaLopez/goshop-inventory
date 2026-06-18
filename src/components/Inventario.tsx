@@ -258,39 +258,26 @@ export default function Inventario() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <button
                     onClick={async () => {
-                      if (confirm(`¿Eliminar ${item.marca} ${item.modelo} de ${sucursal}?\n\nEsto solo eliminará el producto de esta sucursal.`)) {
+                      if (confirm(`¿Eliminar ${item.marca} ${item.modelo} de ${sucursal}?\n\nEsto eliminará el producto solo de esta sucursal.`)) {
                         try {
-                          // Primero eliminar el inventario de esta sucursal
-                          const { error: errorInv } = await supabase
+                          // Solo eliminar el inventario de esta sucursal
+                          // El CASCADE de la base de datos se encargará del resto
+                          const { error } = await supabase
                             .from('inventario')
                             .delete()
                             .eq('producto_id', item.producto_id)
                             .eq('ubicacion', sucursal)
                           
-                          if (errorInv) throw errorInv
-                          
-                          // Verificar si el producto existe en otras sucursales
-                          const { data: otrosInv } = await supabase
-                            .from('inventario')
-                            .select('id')
-                            .eq('producto_id', item.producto_id)
-                          
-                          // Si no existe en otras sucursales, eliminar el producto
-                          if (!otrosInv || otrosInv.length === 0) {
-                            const { error: errorProd } = await supabase
-                              .from('productos')
-                              .delete()
-                              .eq('id', item.producto_id)
-                            
-                            if (errorProd) throw errorProd
+                          if (error) {
+                            console.error('Error completo:', error)
+                            throw error
                           }
                           
-                          fetchStock()
-                          alert('Producto eliminado correctamente')
+                          await fetchStock()
+                          alert('✅ Producto eliminado correctamente de ' + sucursal)
                         } catch (error: any) {
                           console.error('Error eliminando producto:', error)
-                          const errorMsg = error.message || error.error_description || JSON.stringify(error)
-                          alert(`Error al eliminar producto:\n\n${errorMsg}\n\nRevisa la consola para más detalles.`)
+                          alert(`❌ Error: ${error.message || 'Error desconocido'}\n\nRevisa la consola (F12) para más detalles.`)
                         }
                       }
                     }}
