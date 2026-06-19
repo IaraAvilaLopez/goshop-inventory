@@ -73,7 +73,7 @@ export default function Transacciones() {
 
       const productosActualRes = await supabase
         .from('productos')
-        .select('id, marca, modelo, capacidad_gb, color')
+        .select('id, marca, modelo, capacidad_gb, color, bateria_porcentaje')
         .in('id', productosIdsActual)
 
       if (productosActualRes.error) throw productosActualRes.error
@@ -91,7 +91,7 @@ export default function Transacciones() {
 
       const productosOtraRes = await supabase
         .from('productos')
-        .select('id, marca, modelo, capacidad_gb, color')
+        .select('id, marca, modelo, capacidad_gb, color, bateria_porcentaje')
         .in('id', productosIdsOtra)
 
       if (productosOtraRes.error) throw productosOtraRes.error

@@ -51,6 +51,7 @@ export default function CierreDia() {
         modelo: item.productos?.modelo || '',
         capacidad_gb: item.productos?.capacidad_gb || '',
         color: item.productos?.color || '',
+        bateria_porcentaje: item.productos?.bateria_porcentaje || null,
         created_at: '',
         updated_at: ''
       }))
