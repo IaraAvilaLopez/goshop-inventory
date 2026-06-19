@@ -17,6 +17,7 @@
 10. [Historial de Operaciones](#historial-de-operaciones)
 11. [Sistema de Alertas](#sistema-de-alertas)
 12. [Preguntas Frecuentes](#preguntas-frecuentes)
+13. [Costos y Mantenimiento del Sistema](#costos-y-mantenimiento-del-sistema)
 
 ---
 
@@ -601,13 +602,68 @@ R: Sí. A las 00:00 horas (Argentina), el sistema detecta automáticamente el ca
 
 ---
 
-## SOPORTE TÉCNICO
+## COSTOS Y MANTENIMIENTO DEL SISTEMA
 
-Para asistencia técnica o consultas adicionales, contacte a:
+### 💰 Costos Actuales: **GRATUITO**
 
-**Email**: [correo de soporte]
-**Teléfono**: [número de contacto]
-**Horario de atención**: [horario]
+El sistema GoShop actualmente **no tiene costo mensual** gracias a que utiliza servicios en sus planes gratuitos:
+
+- **Base de Datos (Supabase)**: Plan gratuito
+- **Hosting Web (Vercel)**: Plan gratuito
+
+Estos servicios son **más que suficientes** para el volumen de uso actual de las dos sucursales.
+
+### 📊 ¿Cuándo Podría Ser Necesario Pagar?
+
+El sistema podría requerir una suscripción paga **solo si**:
+
+1. **Crecimiento significativo**: Apertura de muchas sucursales nuevas (más de 10)
+2. **Almacenamiento muy grande**: Años de historial acumulado (más de 5 años)
+3. **Tráfico web muy alto**: Cientos de usuarios simultáneos constantemente
+
+**Costo estimado (si fuera necesario)**: Aproximadamente USD $45/mes
+
+### 📈 Monitoreo y Seguimiento
+
+- ✅ Se revisará el uso cada **3 meses** durante el primer año
+- ✅ Recibirán **notificación anticipada** si se acerca a los límites
+- ✅ Se evaluará juntos la mejor opción antes de cualquier cambio
+
+### 🛠️ Soporte Técnico: **GRATUITO**
+
+El soporte técnico incluye **sin costo**:
+
+#### Servicios Gratuitos
+- ✅ **Corrección de errores** del sistema
+- ✅ **Consultas y dudas** sobre el uso
+- ✅ **Actualizaciones de seguridad**
+- ✅ **Cambios menores** (textos, formatos, ajustes)
+
+#### Servicios con Costo (a evaluar)
+- 💡 Nuevas funcionalidades grandes
+- 💡 Integraciones con otros sistemas
+- 💡 Rediseño completo de interfaz
+
+### 📞 Contacto para Soporte
+
+**Desarrolladora**: Iara Avila Lopez
+
+**Canales de contacto**:
+- **Email**: [tu email]
+- **WhatsApp**: [tu número]
+- **Horario**: Lunes a Viernes, 9:00 - 18:00 hs
+
+**Tiempo de respuesta**:
+- Errores críticos: Dentro de 24 horas
+- Consultas generales: 48-72 horas
+
+### 🤝 Compromiso
+
+- ✅ Mantener el sistema funcionando correctamente
+- ✅ Responder consultas sin costo
+- ✅ Notificar con anticipación cualquier cambio de costos
+- ✅ Buscar siempre la opción más económica
+- ✅ Transparencia total en información técnica y financiera
 
 ---
 

@@ -29,23 +29,20 @@ export default function Dashboard() {
 
       if (stockError) throw stockError
 
-      const { data: alertas, error: alertasError } = await supabase
-        .from('vista_alertas_activas')
-        .select('*')
-        .eq('ubicacion', sucursal)
-
-      if (alertasError) throw alertasError
-
       if (stock) {
         setStockData(stock)
         const totalUnidades = stock.reduce((sum, item) => sum + (item.cantidad_actual || 0), 0)
         const stockCritico = stock.filter(item => item.nivel_stock === 'CRÍTICO').length
+        // Contar alertas: productos con stock crítico O bajo (igual que en la sección Alertas)
+        const alertasActivas = stock.filter(item => 
+          item.nivel_stock === 'CRÍTICO' || item.nivel_stock === 'BAJO'
+        ).length
 
         setStats({
           totalProductos: stock.length,
           stockCritico,
           totalUnidades,
-          alertasActivas: alertas?.length || 0,
+          alertasActivas,
         })
       }
     } catch (error) {
