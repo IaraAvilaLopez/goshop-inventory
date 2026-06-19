@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase, type StockActual } from '../lib/supabase'
 import { useSucursal } from '../context/SucursalContext'
-import { Plus, Search } from 'lucide-react'
+import { Plus, Search, Edit } from 'lucide-react'
 
 export default function Inventario() {
   const { sucursal } = useSucursal()
@@ -11,6 +11,8 @@ export default function Inventario() {
   const [filterMarca, setFilterMarca] = useState('')
   const [filterCapacidad, setFilterCapacidad] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingProduct, setEditingProduct] = useState<StockActual | null>(null)
   const [tipoProducto, setTipoProducto] = useState<'CELULAR' | 'OTRO'>('CELULAR')
 
   const [newProduct, setNewProduct] = useState({
@@ -255,7 +257,17 @@ export default function Inventario() {
                     {item.nivel_stock}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <td className="px-6 py-4 whitespace-nowrap text-sm space-x-3">
+                  <button
+                    onClick={() => {
+                      setEditingProduct(item)
+                      setShowEditModal(true)
+                    }}
+                    className="inline-flex items-center text-blue-600 hover:text-blue-900 font-medium"
+                  >
+                    <Edit className="w-4 h-4 mr-1" />
+                    Editar
+                  </button>
                   <button
                     onClick={async () => {
                       if (confirm(`¿Eliminar ${item.marca} ${item.modelo} de ${sucursal}?\n\nEsto eliminará el producto solo de esta sucursal.`)) {
@@ -281,7 +293,7 @@ export default function Inventario() {
                         }
                       }
                     }}
-                    className="text-red-600 hover:text-red-900 font-medium"
+                    className="inline-flex items-center text-red-600 hover:text-red-900 font-medium"
                   >
                     Eliminar
                   </button>
@@ -403,6 +415,157 @@ export default function Inventario() {
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
               >
                 Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Edición */}
+      {showEditModal && editingProduct && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              ✏️ Editar Producto
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+                <input
+                  type="text"
+                  value={editingProduct.marca}
+                  onChange={(e) => setEditingProduct({...editingProduct, marca: e.target.value})}
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
+                <input
+                  type="text"
+                  value={editingProduct.modelo}
+                  onChange={(e) => setEditingProduct({...editingProduct, modelo: e.target.value})}
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                <input
+                  type="text"
+                  value={editingProduct.color || ''}
+                  onChange={(e) => setEditingProduct({...editingProduct, color: e.target.value})}
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Capacidad (GB)</label>
+                <input
+                  type="text"
+                  value={editingProduct.capacidad_gb}
+                  onChange={(e) => setEditingProduct({...editingProduct, capacidad_gb: e.target.value})}
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Stock Actual
+                </label>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setEditingProduct({
+                      ...editingProduct, 
+                      cantidad_actual: Math.max(0, editingProduct.cantidad_actual - 1)
+                    })}
+                    className="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200 font-bold"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    min="0"
+                    value={editingProduct.cantidad_actual}
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct, 
+                      cantidad_actual: Math.max(0, parseInt(e.target.value) || 0)
+                    })}
+                    className="w-full text-center rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-bold text-lg"
+                  />
+                  <button
+                    onClick={() => setEditingProduct({
+                      ...editingProduct, 
+                      cantidad_actual: editingProduct.cantidad_actual + 1
+                    })}
+                    className="px-3 py-2 bg-green-100 text-green-700 rounded-md hover:bg-green-200 font-bold"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Stock Mínimo (para alertas)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={editingProduct.cantidad_minima}
+                  onChange={(e) => setEditingProduct({
+                    ...editingProduct, 
+                    cantidad_minima: parseInt(e.target.value) || 0
+                  })}
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setEditingProduct(null)
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    // Actualizar producto
+                    const { error: prodError } = await supabase
+                      .from('productos')
+                      .update({
+                        marca: editingProduct.marca,
+                        modelo: editingProduct.modelo,
+                        color: editingProduct.color,
+                        capacidad_gb: editingProduct.capacidad_gb,
+                      })
+                      .eq('id', editingProduct.producto_id)
+                    
+                    if (prodError) throw prodError
+
+                    // Actualizar inventario
+                    const { error: invError } = await supabase
+                      .from('inventario')
+                      .update({
+                        cantidad_actual: editingProduct.cantidad_actual,
+                        cantidad_minima: editingProduct.cantidad_minima,
+                      })
+                      .eq('producto_id', editingProduct.producto_id)
+                      .eq('ubicacion', sucursal)
+                    
+                    if (invError) throw invError
+
+                    alert('✅ Producto actualizado correctamente')
+                    setShowEditModal(false)
+                    setEditingProduct(null)
+                    fetchStock()
+                  } catch (error: any) {
+                    console.error('Error actualizando producto:', error)
+                    alert(`❌ Error: ${error.message}`)
+                  }
+                }}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+              >
+                Guardar Cambios
               </button>
             </div>
           </div>

@@ -5,13 +5,12 @@ import Transacciones from './components/Transacciones'
 import Alertas from './components/Alertas'
 import VentasDia from './components/VentasDia'
 import CierreDia from './components/CierreDiaNuevo'
-import Reportes from './components/Reportes'
 import AlertaPopup from './components/AlertaPopup'
 import SeleccionSucursal from './components/SeleccionSucursal'
 import { useSucursal } from './context/SucursalContext'
-import { Package, ShoppingCart, AlertTriangle, Calendar, LayoutDashboard, DollarSign, BarChart3, LogOut, MapPin } from 'lucide-react'
+import { Package, ShoppingCart, AlertTriangle, Calendar, LayoutDashboard, DollarSign, LogOut, MapPin } from 'lucide-react'
 
-type View = 'dashboard' | 'inventario' | 'transacciones' | 'alertas' | 'ventas' | 'cierre' | 'reportes'
+type View = 'dashboard' | 'inventario' | 'transacciones' | 'alertas' | 'ventas' | 'cierre'
 
 function App() {
   const { sucursal, setSucursal, cerrarSesion } = useSucursal()
@@ -27,7 +26,6 @@ function App() {
     { id: 'inventario' as View, name: 'Stock', icon: Package },
     { id: 'ventas' as View, name: 'Ventas', icon: DollarSign },
     { id: 'cierre' as View, name: 'Cierre', icon: Calendar },
-    { id: 'reportes' as View, name: 'Reportes', icon: BarChart3 },
     { id: 'transacciones' as View, name: 'Historial', icon: ShoppingCart },
     { id: 'alertas' as View, name: 'Alertas', icon: AlertTriangle },
   ]
@@ -89,7 +87,6 @@ function App() {
         {currentView === 'inventario' && <Inventario />}
         {currentView === 'ventas' && <VentasDia />}
         {currentView === 'cierre' && <CierreDia />}
-        {currentView === 'reportes' && <Reportes />}
         {currentView === 'transacciones' && <Transacciones />}
         {currentView === 'alertas' && <Alertas />}
       </main>
