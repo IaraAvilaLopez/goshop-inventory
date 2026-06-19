@@ -12,13 +12,37 @@ type VentaPendiente = {
   comentarios?: string
 }
 
+// Función para obtener la fecha actual en zona horaria de Argentina (UTC-3)
+function getFechaArgentina(): string {
+  const ahora = new Date()
+  // Convertir a hora de Argentina (UTC-3)
+  const argentinaTime = new Date(ahora.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+  const year = argentinaTime.getFullYear()
+  const month = String(argentinaTime.getMonth() + 1).padStart(2, '0')
+  const day = String(argentinaTime.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 export default function CierreDiaNuevo() {
   const { sucursal } = useSucursal()
-  const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0])
+  const [fecha, setFecha] = useState(getFechaArgentina())
   const [ventasPendientes, setVentasPendientes] = useState<VentaPendiente[]>([])
   const [observaciones, setObservaciones] = useState('')
   const [loading, setLoading] = useState(true)
   const [yaCerrado, setYaCerrado] = useState(false)
+
+  // Verificar cambio de día cada minuto
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const fechaActual = getFechaArgentina()
+      if (fechaActual !== fecha) {
+        console.log('🔄 Cambio de día detectado:', fecha, '→', fechaActual)
+        setFecha(fechaActual)
+      }
+    }, 60000) // Verificar cada minuto
+
+    return () => clearInterval(interval)
+  }, [fecha])
 
   useEffect(() => {
     cargarDatosDia()
