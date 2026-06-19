@@ -119,6 +119,7 @@ export default function Transacciones() {
           marca: prod.marca || '',
           color: prod.color || '',
           capacidad_gb: prod.capacidad_gb || '',
+          bateria_porcentaje: prod.bateria_porcentaje || null,
           created_at: '',
           updated_at: ''
         }))
@@ -136,6 +137,7 @@ export default function Transacciones() {
           marca: prod.marca || '',
           color: prod.color || '',
           capacidad_gb: prod.capacidad_gb || '',
+          bateria_porcentaje: prod.bateria_porcentaje || null,
           created_at: '',
           updated_at: ''
         }))
