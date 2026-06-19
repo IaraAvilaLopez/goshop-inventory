@@ -44,6 +44,7 @@ export default function Transacciones() {
     modelo: '',
     color: '',
     capacidad_gb: '',
+    bateria_porcentaje: '',
   })
   
   // Estado para búsqueda en transferencias
@@ -173,6 +174,7 @@ export default function Transacciones() {
             modelo: nuevoProductoCelular.modelo.toUpperCase(),
             color: nuevoProductoCelular.color || null,
             capacidad_gb: nuevoProductoCelular.capacidad_gb || null,
+            bateria_porcentaje: nuevoProductoCelular.bateria_porcentaje ? parseInt(nuevoProductoCelular.bateria_porcentaje) : null,
             descripcion: null,
           }])
           .select()
@@ -260,6 +262,7 @@ export default function Transacciones() {
         modelo: '',
         color: '',
         capacidad_gb: '',
+        bateria_porcentaje: '',
       })
       fetchData()
     } catch (error: any) {
@@ -800,6 +803,15 @@ export default function Transacciones() {
                       placeholder="Capacidad (ej: 128, 256, 512, 1T)"
                       value={nuevoProductoCelular.capacidad_gb}
                       onChange={(e) => setNuevoProductoCelular({...nuevoProductoCelular, capacidad_gb: e.target.value})}
+                      className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      placeholder="Batería % (ej: 85, 90, 95)"
+                      value={nuevoProductoCelular.bateria_porcentaje}
+                      onChange={(e) => setNuevoProductoCelular({...nuevoProductoCelular, bateria_porcentaje: e.target.value})}
                       className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
