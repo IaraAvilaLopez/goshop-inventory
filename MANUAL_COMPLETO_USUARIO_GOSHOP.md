@@ -10,10 +10,10 @@
 3. [Selección de Sucursal](#selección-de-sucursal)
 4. [Panel de Inicio (Dashboard)](#panel-de-inicio-dashboard)
 5. [Gestión de Stock](#gestión-de-stock)
-6. [Registro de Ventas](#registro-de-ventas)
-7. [Cierre de Día](#cierre-de-día)
-8. [Transacciones](#transacciones)
-9. [Reportes](#reportes)
+6. [Editar Productos](#editar-productos)
+7. [Registro de Ventas](#registro-de-ventas)
+8. [Cierre de Día](#cierre-de-día)
+9. [Transacciones](#transacciones)
 10. [Historial de Operaciones](#historial-de-operaciones)
 11. [Sistema de Alertas](#sistema-de-alertas)
 12. [Preguntas Frecuentes](#preguntas-frecuentes)
@@ -131,9 +131,58 @@ La sección de **Stock** le permite visualizar y gestionar todo el inventario de
 #### Eliminar Producto
 1. Haga clic en el botón **"Eliminar"** junto al producto deseado
 2. Confirme la acción en el cuadro de diálogo
-3. **ADVERTENCIA**: Solo puede eliminar productos con stock en cero
+3. El producto se eliminará solo de la sucursal actual
 
 **Nota**: La eliminación de productos es permanente y no se puede deshacer. Use esta función con precaución.
+
+---
+
+## EDITAR PRODUCTOS
+
+La función de **Editar Productos** le permite modificar la información de cualquier producto y ajustar el stock manualmente cuando sea necesario.
+
+### Cómo Editar un Producto
+
+1. En la sección **"Stock"**, localice el producto que desea editar
+2. Haga clic en el botón **"Editar"** (ícono de lápiz) junto al producto
+3. Se abrirá un formulario con todos los datos del producto
+
+### Información que Puede Modificar
+
+#### Datos del Producto
+- **Marca**: Nombre del fabricante
+- **Modelo**: Modelo específico del producto
+- **Color**: Variante de color
+- **Capacidad**: Especificaciones técnicas (GB, tamaño, etc.)
+
+#### Gestión de Stock
+- **Stock Actual**: Cantidad de unidades disponibles
+  - Use los botones **+** y **-** para ajustar rápidamente
+  - O escriba directamente la cantidad deseada
+- **Stock Mínimo**: Nivel de alerta para notificaciones
+
+### Cuándo Usar la Edición Manual de Stock
+
+#### Casos de Uso Recomendados
+- ✅ **Corrección de errores**: Si se registró una cantidad incorrecta
+- ✅ **Ajuste de inventario**: Después de un conteo físico
+- ✅ **Productos dañados**: Reducir stock por mercadería en mal estado
+- ✅ **Devoluciones**: Aumentar stock cuando un cliente devuelve un producto
+- ✅ **Corrección de nombre**: Si se escribió mal la marca o modelo
+
+#### Precauciones
+- ⚠️ **Use con cuidado**: Los cambios manuales no quedan registrados como transacciones
+- ⚠️ **Documente**: Anote en un registro externo los ajustes manuales importantes
+- ⚠️ **Verifique**: Confirme que el stock final sea correcto antes de guardar
+
+### Guardar los Cambios
+
+1. Revise toda la información modificada
+2. Haga clic en **"Guardar Cambios"**
+3. El sistema actualizará inmediatamente el producto
+4. Verá una confirmación: "✅ Producto actualizado correctamente"
+
+**IMPORTANTE**: Los cambios se aplican solo a la sucursal actual. Si el producto existe en ambas sucursales, debe editarlo por separado en cada una.
 
 ---
 
@@ -185,6 +234,17 @@ La tabla muestra:
 ## CIERRE DE DÍA
 
 El **Cierre de Día** es el proceso mediante el cual se procesan todas las ventas pendientes y se actualiza el inventario.
+
+### Cambio Automático de Día
+
+**IMPORTANTE**: El sistema detecta automáticamente el cambio de día a las **00:00 horas** (hora de Argentina).
+
+- ✅ A las 00:00, el sistema carga automáticamente el nuevo día
+- ✅ Los cierres procesados del día anterior quedan guardados permanentemente
+- ✅ Puede consultar cierres anteriores en la sección **"Historial"**
+- ✅ **NO es necesario reiniciar la aplicación** para ver el nuevo día
+
+**Nota**: Si tiene la aplicación abierta a las 00:00, el cambio se detectará automáticamente en menos de 1 minuto.
 
 ### Cuándo Realizar el Cierre
 
@@ -404,60 +464,6 @@ Las transacciones se agrupan por día y muestran:
 
 ---
 
-## REPORTES
-
-La sección de **Reportes** proporciona análisis detallados de las operaciones de su sucursal.
-
-### Tipos de Reportes
-
-#### 1. Reporte de Ventas
-**Información incluida**:
-- Total de ventas en el período
-- Cantidad de unidades vendidas
-- Productos más vendidos
-- Tendencias de ventas por día
-
-**Cómo generar**:
-1. Acceda a **"Reportes"**
-2. Seleccione el período deseado
-3. El reporte se genera automáticamente
-
-#### 2. Reporte de Compras
-**Información incluida**:
-- Total de compras realizadas
-- Cantidad de unidades ingresadas
-- Proveedores principales
-- Inversión en inventario
-
-#### 3. Reporte de Transferencias
-**Información incluida**:
-- Transferencias enviadas
-- Transferencias recibidas
-- Balance de transferencias entre sucursales
-- Productos más transferidos
-
-#### 4. Reporte de Stock Actual
-**Información incluida**:
-- Inventario completo de la sucursal
-- Valor total del inventario
-- Productos con stock crítico
-- Distribución por categoría
-
-### Exportar Reportes
-
-Los reportes pueden exportarse en los siguientes formatos:
-- **PDF**: Para impresión o archivo
-- **Excel**: Para análisis adicional
-- **CSV**: Para importar en otros sistemas
-
-**Proceso de exportación**:
-1. Genere el reporte deseado
-2. Haga clic en **"Exportar"**
-3. Seleccione el formato
-4. El archivo se descargará automáticamente
-
----
-
 ## HISTORIAL DE OPERACIONES
 
 El **Historial** mantiene un registro completo de todas las operaciones realizadas en el sistema.
@@ -587,16 +593,11 @@ R: Puede crear productos nuevos al registrar una transacción, usando los botone
 **P: ¿Los productos son compartidos entre sucursales?**
 R: Sí, el catálogo de productos es compartido, pero el stock se gestiona independientemente para cada sucursal.
 
-### Reportes y Análisis
+**P: ¿Puedo editar un producto después de crearlo?**
+R: Sí. Use el botón "Editar" junto a cada producto en la sección de Stock para modificar sus datos o ajustar el stock manualmente.
 
-**P: ¿Los reportes incluyen datos de ambas sucursales?**
-R: No. Los reportes muestran únicamente información de la sucursal seleccionada actualmente.
-
-**P: ¿Puedo generar reportes de períodos personalizados?**
-R: Sí. Use el filtro "Personalizado" y seleccione las fechas de inicio y fin deseadas.
-
-**P: ¿Con qué frecuencia se actualizan los reportes?**
-R: Los reportes se generan en tiempo real con la información más actualizada del sistema.
+**P: ¿El cambio de día es automático?**
+R: Sí. A las 00:00 horas (Argentina), el sistema detecta automáticamente el cambio de día y carga el nuevo día sin borrar los cierres anteriores.
 
 ---
 
