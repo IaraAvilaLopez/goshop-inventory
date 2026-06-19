@@ -10,7 +10,6 @@ export default function Inventario() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterMarca, setFilterMarca] = useState('')
   const [filterCapacidad, setFilterCapacidad] = useState('')
-  const [filterBateria, setFilterBateria] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState<StockActual | null>(null)
@@ -146,14 +145,12 @@ export default function Inventario() {
     
     const matchesMarca = !filterMarca || item.marca === filterMarca
     const matchesCapacidad = !filterCapacidad || item.capacidad_gb === filterCapacidad
-    const matchesBateria = !filterBateria || (item.bateria_porcentaje !== null && item.bateria_porcentaje.toString() === filterBateria)
 
-    return matchesSearch && matchesMarca && matchesCapacidad && matchesBateria
+    return matchesSearch && matchesMarca && matchesCapacidad
   })
 
   const marcas = [...new Set(stock.map(item => item.marca).filter(Boolean))]
   const capacidades = [...new Set(stock.map(item => item.capacidad_gb).filter(Boolean))]
-  const baterias = [...new Set(stock.map(item => item.bateria_porcentaje).filter(b => b !== null))].sort((a, b) => (b || 0) - (a || 0))
 
   if (loading) {
     return <div className="flex items-center justify-center h-64">Cargando...</div>
@@ -188,7 +185,7 @@ export default function Inventario() {
       </div>
 
       <div className="bg-white shadow rounded-lg mb-6 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <input
@@ -219,22 +216,11 @@ export default function Inventario() {
               <option key={cap} value={cap}>{cap}</option>
             ))}
           </select>
-          <select
-            value={filterBateria}
-            onChange={(e) => setFilterBateria(e.target.value)}
-            className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          >
-            <option value="">Todas las baterías</option>
-            {baterias.map(bat => (
-              <option key={bat} value={bat}>{bat}%</option>
-            ))}
-          </select>
           <button
             onClick={() => {
               setSearchTerm('')
               setFilterMarca('')
               setFilterCapacidad('')
-              setFilterBateria('')
             }}
             className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
