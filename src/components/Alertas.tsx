@@ -31,39 +31,26 @@ export default function Alertas() {
   async function fetchAlertas() {
     try {
       const { data, error } = await supabase
-        .from('alertas_stock')
-        .select(`
-          alerta_id:id,
-          cantidad_actual,
-          cantidad_minima,
-          ubicacion,
-          fecha_alerta:created_at,
-          estado_alerta,
-          productos:producto_id (
-            modelo,
-            marca,
-            color,
-            capacidad_gb
-          )
-        `)
+        .from('vista_stock_actual')
+        .select('*')
         .eq('ubicacion', sucursal)
-        .eq('estado_alerta', 'ACTIVA')
-        .order('created_at', { ascending: false })
+        .in('nivel_stock', ['CRÍTICO', 'BAJO'])
+        .order('cantidad_actual', { ascending: true })
 
       if (error) throw error
       
       // Mapear datos para que coincidan con el tipo AlertaView
       const alertasMapeadas = (data || []).map((item: any) => ({
-        alerta_id: item.alerta_id,
-        modelo: item.productos?.modelo || '',
-        marca: item.productos?.marca || '',
-        color: item.productos?.color || null,
-        capacidad_gb: item.productos?.capacidad_gb || '',
+        alerta_id: item.producto_id,
+        modelo: item.modelo || '',
+        marca: item.marca || '',
+        color: item.color || null,
+        capacidad_gb: item.capacidad_gb || '',
         cantidad_actual: item.cantidad_actual,
         cantidad_minima: item.cantidad_minima,
         ubicacion: item.ubicacion,
-        fecha_alerta: item.fecha_alerta,
-        estado_alerta: item.estado_alerta
+        fecha_alerta: item.ultima_actualizacion,
+        estado_alerta: 'ACTIVA'
       }))
       
       setAlertas(alertasMapeadas)
@@ -71,27 +58,6 @@ export default function Alertas() {
       console.error('Error fetching alerts:', error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  async function resolverAlerta(alertaId: string) {
-    if (!confirm('¿Marcar esta alerta como resuelta? Esto indica que ya restauraste el stock o compensaste con otro producto.')) {
-      return
-    }
-
-    try {
-      const { error } = await supabase
-        .from('alertas_stock')
-        .update({ estado_alerta: 'RESUELTA', fecha_resolucion: new Date().toISOString() })
-        .eq('id', alertaId)
-
-      if (error) throw error
-
-      alert('✅ Alerta resuelta correctamente')
-      fetchAlertas()
-    } catch (error) {
-      console.error('Error resolving alert:', error)
-      alert('❌ Error al resolver alerta')
     }
   }
 
@@ -156,14 +122,10 @@ export default function Alertas() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {formatDateTime(alerta.fecha_alerta)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <button
-                      onClick={() => resolverAlerta(alerta.alerta_id)}
-                      className="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium transition-colors"
-                    >
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      Resolver
-                    </button>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <span className="text-xs italic">
+                      La alerta desaparecerá al aumentar el stock
+                    </span>
                   </td>
                 </tr>
               ))}
