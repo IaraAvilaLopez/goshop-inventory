@@ -10,6 +10,7 @@ export default function Inventario() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterMarca, setFilterMarca] = useState('')
   const [filterCapacidad, setFilterCapacidad] = useState('')
+  const [filterBateria, setFilterBateria] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState<StockActual | null>(null)
@@ -21,6 +22,7 @@ export default function Inventario() {
     marca: '',
     color: '',
     capacidad_gb: '',
+    bateria_porcentaje: '',
     descripcion: '',
     cantidad_inicial: 1,
     cantidad_minima: 1,
@@ -60,6 +62,7 @@ export default function Inventario() {
         .eq('modelo', newProduct.modelo.toUpperCase())
         .eq('capacidad_gb', newProduct.capacidad_gb || null)
         .eq('color', newProduct.color || null)
+        .eq('bateria_porcentaje', newProduct.bateria_porcentaje ? parseInt(newProduct.bateria_porcentaje) : null)
         .maybeSingle()
 
       if (searchError) throw searchError
@@ -92,6 +95,7 @@ export default function Inventario() {
             marca: newProduct.marca.toUpperCase(),
             color: newProduct.color ? newProduct.color.toUpperCase() : null,
             capacidad_gb: newProduct.capacidad_gb || null,
+            bateria_porcentaje: newProduct.bateria_porcentaje ? parseInt(newProduct.bateria_porcentaje) : null,
             descripcion: newProduct.descripcion || null,
           }])
           .select()
@@ -122,6 +126,7 @@ export default function Inventario() {
         marca: '',
         color: '',
         capacidad_gb: '',
+        bateria_porcentaje: '',
         descripcion: '',
         cantidad_inicial: 1,
         cantidad_minima: 1,
@@ -141,12 +146,14 @@ export default function Inventario() {
     
     const matchesMarca = !filterMarca || item.marca === filterMarca
     const matchesCapacidad = !filterCapacidad || item.capacidad_gb === filterCapacidad
+    const matchesBateria = !filterBateria || (item.bateria_porcentaje !== null && item.bateria_porcentaje.toString() === filterBateria)
 
-    return matchesSearch && matchesMarca && matchesCapacidad
+    return matchesSearch && matchesMarca && matchesCapacidad && matchesBateria
   })
 
   const marcas = [...new Set(stock.map(item => item.marca).filter(Boolean))]
   const capacidades = [...new Set(stock.map(item => item.capacidad_gb).filter(Boolean))]
+  const baterias = [...new Set(stock.map(item => item.bateria_porcentaje).filter(b => b !== null))].sort((a, b) => (b || 0) - (a || 0))
 
   if (loading) {
     return <div className="flex items-center justify-center h-64">Cargando...</div>
@@ -181,7 +188,7 @@ export default function Inventario() {
       </div>
 
       <div className="bg-white shadow rounded-lg mb-6 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <input
@@ -212,11 +219,22 @@ export default function Inventario() {
               <option key={cap} value={cap}>{cap}</option>
             ))}
           </select>
+          <select
+            value={filterBateria}
+            onChange={(e) => setFilterBateria(e.target.value)}
+            className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            <option value="">Todas las baterías</option>
+            {baterias.map(bat => (
+              <option key={bat} value={bat}>{bat}%</option>
+            ))}
+          </select>
           <button
             onClick={() => {
               setSearchTerm('')
               setFilterMarca('')
               setFilterCapacidad('')
+              setFilterBateria('')
             }}
             className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
@@ -233,6 +251,7 @@ export default function Inventario() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Color</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Capacidad</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Batería %</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mínimo</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
@@ -246,6 +265,9 @@ export default function Inventario() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.modelo}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.color || '-'}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.capacidad_gb}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {item.bateria_porcentaje ? `${item.bateria_porcentaje}%` : '-'}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">{item.cantidad_actual}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.cantidad_minima}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -340,6 +362,15 @@ export default function Inventario() {
                     placeholder="Capacidad (ej: 128, 256, 512, 1T)"
                     value={newProduct.capacidad_gb}
                     onChange={(e) => setNewProduct({...newProduct, capacidad_gb: e.target.value})}
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="Batería % (ej: 85, 90, 95)"
+                    value={newProduct.bateria_porcentaje}
+                    onChange={(e) => setNewProduct({...newProduct, bateria_porcentaje: e.target.value})}
                     className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                 </>
@@ -466,6 +497,17 @@ export default function Inventario() {
                 />
               </div>
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Batería %</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={editingProduct.bateria_porcentaje || ''}
+                  onChange={(e) => setEditingProduct({...editingProduct, bateria_porcentaje: e.target.value ? parseInt(e.target.value) : null})}
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Stock Actual
                 </label>
@@ -537,6 +579,7 @@ export default function Inventario() {
                         modelo: editingProduct.modelo,
                         color: editingProduct.color,
                         capacidad_gb: editingProduct.capacidad_gb,
+                        bateria_porcentaje: editingProduct.bateria_porcentaje,
                       })
                       .eq('id', editingProduct.producto_id)
                     

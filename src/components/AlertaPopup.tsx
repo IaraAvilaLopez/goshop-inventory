@@ -38,9 +38,10 @@ export default function AlertaPopup({ onNavigateToAlertas, currentView }: Alerta
   async function verificarAlertas() {
     try {
       const { data, error } = await supabase
-        .from('vista_alertas_activas')
-        .select('alerta_id')
+        .from('vista_stock_actual')
+        .select('producto_id, nivel_stock')
         .eq('ubicacion', sucursal)
+        .in('nivel_stock', ['CRÍTICO', 'BAJO'])
 
       if (error) throw error
       setCantidadAlertas(data?.length || 0)

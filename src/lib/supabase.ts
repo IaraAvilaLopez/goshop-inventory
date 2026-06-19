@@ -11,6 +11,7 @@ export type Producto = {
   marca: string
   color: string | null
   capacidad_gb: string
+  bateria_porcentaje: number | null
   created_at: string
   updated_at: string
 }
@@ -69,6 +70,7 @@ export type StockActual = {
   marca: string
   color: string | null
   capacidad_gb: string
+  bateria_porcentaje: number | null
   cantidad_actual: number
   cantidad_minima: number
   ubicacion: string
